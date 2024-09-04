@@ -90,10 +90,10 @@ class MovieSerializer(serializers.Serializer):
         )
 
         if "actors" in validated_data:
-            actors_data = validated_data.pop('actors', [])
+            actors_data = validated_data.pop("actors", [])
             instance.actors.set(actors_data)
         if "genres" in validated_data:
-            genres_data = validated_data.pop('genres', [])
+            genres_data = validated_data.pop("genres", [])
             instance.genres.set(genres_data)
 
         instance.save()
