@@ -1,12 +1,11 @@
-from rest_framework.response import Response
-from rest_framework import status, generics, mixins
-
 from django.shortcuts import get_object_or_404
+from rest_framework import status, generics, mixins, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from cinema.models import Movie, Genre, Actor, CinemaHall
-from cinema.serializers import (MovieSerializer, GenreSerializer,
-                                ActorSerializer, CinemaHallSerializer)
-from rest_framework.views import APIView
+from cinema.serializers import (GenreSerializer, ActorSerializer,
+                                CinemaHallSerializer, MovieSerializer)
 
 
 class GenreList(APIView):
@@ -52,9 +51,7 @@ class GenreDetail(APIView):
 
 
 class ActorList(
-    generics.GenericAPIView,
-    mixins.ListModelMixin,
-    mixins.CreateModelMixin
+    generics.GenericAPIView, mixins.ListModelMixin, mixins.CreateModelMixin
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
@@ -70,7 +67,7 @@ class ActorDetail(
     generics.GenericAPIView,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
-    mixins.DestroyModelMixin
+    mixins.DestroyModelMixin,
 ):
     queryset = Actor.objects.all()
     serializer_class = ActorSerializer
@@ -81,5 +78,25 @@ class ActorDetail(
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
 
+    def patch(self, request, *args, **kwargs):
+        return self.partial_update(request, *args, **kwargs)
+
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
+
+
+class CinemaHallViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = CinemaHall.objects.all()
+    serializer_class = CinemaHallSerializer
+
+
+class MovieViewSet(viewsets.ModelViewSet):
+    queryset = Movie.objects.all()
+    serializer_class = MovieSerializer
